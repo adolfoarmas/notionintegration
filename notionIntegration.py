@@ -1,11 +1,13 @@
 import os
+from os.path import join, dirname
 import ast
 import requests
 import json
 from dotenv import dotenv_values
-from notionintegration import urls
+import urls
 
-env_values = dotenv_values('.env')
+dotenv_path = join(dirname(__file__), '.env')
+env_values = dotenv_values(dotenv_path)
 PARENT_ID = env_values['PARENT_ID']
 
 class ApiConnectionHeaderDefinition:
@@ -51,18 +53,6 @@ class DataBase:
 
         if not properties:
             self.get_existing_database()
-
-    def set_database_id(self, database_id:str):
-        """setter method for database id in an already instanciated DataBase Object once it has been created
-
-        Args:
-            database_id (str): string with DB id provided by Notion API
-
-        Returns:
-            str: informative text with new database id
-        """
-        self.database_id = database_id
-        return "database id {db_id} registered".format(db_id=self.database_id)
 
     def get_database_id(self):
         """getter method for de DB id
@@ -180,7 +170,18 @@ class DataBase:
                 'title': self.get_database_title_data_to_payload(),
                 'properties': self.get_database_properties_data()
                 }
-    
+
+    def set_database_id(self, database_id:str):
+        """setter method for database id in an already instanciated DataBase Object once it has been created
+
+        Args:
+            database_id (str): string with DB id provided by Notion API
+
+        Returns:
+            str: informative text with new database id
+        """
+        self.database_id = database_id
+        return "database id {db_id} registered".format(db_id=self.database_id)    
 
     def create_database_if_not_exists(self):
         """function to create DB validating before if it does not exist in Notion.
