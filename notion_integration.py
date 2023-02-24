@@ -7,7 +7,7 @@ from dotenv import dotenv_values
 from os.path import join, dirname
 sys.path.append('..')
 from textAnalizer import TextAnalizer
-from .apiConnectionHeaderDefinition import ApiConnectionHeaderDefinition
+from .api_connection_header_definition import ApiConnectionHeaderDefinition
 
 dotenv_path = join(dirname(__file__), '.env')
 env_values = dotenv_values(dotenv_path)
