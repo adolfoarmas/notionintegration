@@ -1,37 +1,17 @@
-import os
-from os.path import join, dirname
+import sys, os
 import ast
 import requests
 import json
+from . import urls
 from dotenv import dotenv_values
-import urls
+from os.path import join, dirname
+sys.path.append('..')
+from textAnalizer import TextAnalizer
+from .apiConnectionHeaderDefinition import ApiConnectionHeaderDefinition
 
 dotenv_path = join(dirname(__file__), '.env')
 env_values = dotenv_values(dotenv_path)
 PARENT_ID = env_values['PARENT_ID']
-
-class ApiConnectionHeaderDefinition:
-    """Returns an object through get_header() method with header definitions needed to add to HTTP requests to be made to the API."""
-
-    def __init__(self):
-        """Constructor method"""
-        NOTIONKEY = env_values['NOTIONKEY']
-        NOTIONVERSION = env_values['NOTIONVERSION']
-
-        self.authorization = f'Bearer {NOTIONKEY}'
-        self.content_type = 'application/json'
-        self.notion_version = NOTIONVERSION
-        
-    def get_header(self):
-        """getter function to asemble and return header definitions
-        Returns:
-            object: key:value of Autorization, Content-Type ando Notion-Version parameters.
-        """
-        return {
-                'Authorization': self.authorization,
-                'Content-Type': self.content_type,
-                'Notion-Version': self.notion_version,
-              }
 
 class DataBase:
     """DataBase object definition, needed to create a Notion Data Base or to use a existing one."""
@@ -50,9 +30,10 @@ class DataBase:
         self.api_connection_header_definition = ApiConnectionHeaderDefinition()
         self.headers = self.api_connection_header_definition.get_header()
         self.database_id = ''
+        self.database_dictionary = {}
 
         if not properties:
-            self.get_existing_database()
+            self.database_dictionary = self.get_existing_database()
 
     def get_database_id(self):
         """getter method for de DB id
@@ -224,6 +205,8 @@ class Page:
 
     def add_row_to_ratabase(self, row_data:dict):
         """new row data to be added to a DB
+        
+        REFACTOR: Decouple specific data format from this class method
 
         Args:
             row_data (dict): key:value dictionary regarding to DB object's columns
@@ -252,97 +235,3 @@ class Page:
 
         response = requests.post(url=url, json=payload, headers=self.headers)
         print(response.json())
-        ...
-    
-
-
-database_columns_properties =  [
-    {'Book Title' : {
-        'name': 'Book Title',
-        'type': 'title',
-        'title': {},
-    }},
-    {'Author': {
-        'name': 'Author',
-        'type': 'rich_text',
-        'rich_text': {},
-    }},
-    {'Type of Element': {
-        'name': 'Type of Element',
-        'type': 'select',
-        "select": {
-            "options": [
-            {
-                "id": "note",
-                "name": "📝Note",
-                "color": "blue"
-            },
-            {
-                "id": "highlight",
-                "name": "🖍Highlight",
-                "color": "red"
-            },
-            {
-                "id": "marker",
-                "name": "📑Marker",
-                "color": "yellow"
-            }
-            ]
-        }
-    }},
-    {'page': {
-        'name': 'Page',
-        'type': 'number',
-        'number': {
-            'format': 'number'
-        },
-    }},
-    {'Position': {
-        'name': 'Position',
-        'type': 'rich_text',
-        'rich_text': {},
-    }},
-    {'Highlignted Text': {
-        'name': 'Highlignted Text',
-        'type': 'rich_text',
-        'rich_text': {},
-    }},
-    {'Date': {
-        'name': 'Date',
-        'type': 'date',
-        'date': {},
-    }}
-]
-
-
-#to create a new DB
-#database = DataBase(PARENT_ID, database_name='New Database7', properties=database_columns_properties)
-#create_database_response = database.create_database_if_not_exists()
-#print(create_database_response)
-
-#to get existing DB in notion and pass it to Page instance
-database = DataBase(PARENT_ID, database_name='New Database7')
-page = Page(database)
-
-mock_data_to_save = [
-            
-            {'Book Title': 'Tucusito',
-            'Author': 'Andres Bello',
-            'Type of Element': {'id':"highlight", 'name':'🖍Highlight'},
-            'page': 48,
-            'Position': "250-260",
-            'Highlignted Text': "lorem ipsum ... lorem ipsum ...",
-            'Date': "2023-02-01"},
-
-            {'Book Title': 'Ingles 7',
-            'Author': 'Maria Latorraca',
-            'Type of Element': {'id':"marker", 'name':'📑Marker'},
-            'page': 70,
-            'Position': "50-160",
-            'Highlignted Text': "lorem ipsum ... lorem ipsum ...",
-            'Date': "2022-06-01"}
-
-            ]
-
-for mock_row in mock_data_to_save:
-    page.add_row_to_ratabase(mock_row)
