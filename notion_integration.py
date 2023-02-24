@@ -6,7 +6,6 @@ from . import urls
 from dotenv import dotenv_values
 from os.path import join, dirname
 sys.path.append('..')
-from textAnalizer import TextAnalizer
 from .api_connection_header_definition import ApiConnectionHeaderDefinition
 
 dotenv_path = join(dirname(__file__), '.env')
@@ -203,7 +202,7 @@ class Page:
         self.headers = self.api_connection_header_definition.get_header()
         ...
 
-    def add_row_to_ratabase(self, row_data:dict):
+    def add_row_to_database(self, row_data:dict):
         """new row data to be added to a DB
         
         REFACTOR: Decouple specific data format from this class method
