@@ -149,7 +149,3 @@ Contributors names and contact info
 
 * 0.1
     * Initial Release: create DBs and its Pages related to a books anotations. FUTURE: package full decoupled from book anotations application
-
-## Acknowledgments
-
-* [pynotion](https://www.pynotion.com/getting-started-with-python)
