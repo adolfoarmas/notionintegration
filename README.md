@@ -7,6 +7,8 @@ Python Integration with Notion API
 Notionintegration is a package with the purpose of creating databases or obtain already existing databases.
 Furthermore you will be able to search databases by name, once it is found, you could add new pages.
 
+![Automation to load pages in a database](https://github.com/adolfoarmas/notionintegration/blob/main/media/2023-02-25%2011-40-44.gif)
+
 *** **In "Page" class method "add_row_to_ratabase", "data" object has to be addapted to columns format of your database, in further versions the data dictionary will be decoupled of the particular application it was needed for**.
 
 ## Getting Started
